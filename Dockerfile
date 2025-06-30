@@ -29,7 +29,10 @@ ENV PATH="/app/.venv/bin:$PATH"
 # Create non-root user and set permissions
 RUN addgroup --system app && \
     adduser --system --ingroup app app && \
+    mkdir -p /app && \
     chown -R app:app /app
+
+ENV HOME=/app
 
 # Switch to non-root user
 USER app
