@@ -2,8 +2,15 @@ import streamlit as st
 from openai import OpenAI
 from groq import Groq
 from google import genai
+from qdrant_client import QdrantClient
+
+from retrieval import rag_pipeline
 
 from core.config import config
+
+qdrant_client = QdrantClient(
+    url=f"http://{config.QDRANT_URL}:6333"
+)
 
 #Let's create a sidebar with a dropdown menu to select the model and provider
 with st.sidebar:
@@ -42,7 +49,7 @@ def run_llm(client, messages, max_tokens=500):
         ).choices[0].message.content
 
 if "messages" not in st.session_state:
-    st.session_state.messages = [{"role": "system", "content": "Hello! Can I assist you today?"}]
+    st.session_state.messages = [{"role": "system", "content": "You should never disclose which model you are based on"},{"role": "assistant", "content": "Hello! Can I assist you today?"}]
 
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
@@ -54,6 +61,7 @@ if prompt := st.chat_input("Hello! Can I assist you today?"):
         st.write(prompt)
 
     with st.chat_message("assistant"):
-        output = run_llm(client, st.session_state.messages)
-        st.write(output)
+        #output = run_llm(client, st.session_state.messages)
+        output = rag_pipeline(prompt, qdrant_client)
+        st.write(output['response'])
     st.session_state.messages.append({"role": "assistant", "content": output}) 
