@@ -8,7 +8,14 @@ dependencies = [
     "google-genai",
     "groq",
     "openai",
+    "pandas",
     "pydantic",
     "pydantic-settings",
-    "streamlit"
+    "streamlit",
+    "zeep",
+    "qdrant_client",
+    "langsmith",
+    "langchain_openai",
+    "ragas",
+    "rapidfuzz"
 ]
